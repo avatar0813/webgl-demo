@@ -1,0 +1,16 @@
+<template>
+  <div>
+    <h3>拖拽几何体</h3>
+    <div ref="container" class="container"></div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+const container = ref(null)
+
+</script>
+
+<style lang="scss" scoped>
+
+</style>

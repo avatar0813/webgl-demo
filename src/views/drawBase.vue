@@ -53,7 +53,6 @@ function getCube(x = 0, y = 0, z = 0) {
   const geometry = new THREE.BoxGeometry( 1, 1, 1 );
   const material = new THREE.MeshBasicMaterial( { color: '#8c8f88' } );
   const cube = new THREE.Mesh( geometry, material );
-  console.log('rube:', cube)
 
   cube.position.x = x
   cube.position.y = y

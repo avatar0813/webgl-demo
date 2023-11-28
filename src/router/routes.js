@@ -1,7 +1,8 @@
 const routes = [
   {
     path: '/',
-    component: () => import('@/app.vue')
+    name: 'home',
+    component: () => import('@/views/home.vue')
   },
   {
     path: '/draw-base',
@@ -12,7 +13,22 @@ const routes = [
     path: '/hover-face',
     name: 'hoverFace',
     component: () => import('@/views/hoverFace.vue')
-  }
+  },
+  {
+    path: '/stair',
+    name: 'stair',
+    component: () => import('@/views/stair.vue')
+  },
+  {
+    path: '/drag',
+    name: 'drag',
+    component: () => import('@/views/drag.vue')
+  },
+  {
+    path: '/stretch',
+    name: 'stretch',
+    component: () => import('@/views/stretch.vue')
+  },
 ]
 
 export default routes

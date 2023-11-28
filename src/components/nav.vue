@@ -1,0 +1,44 @@
+<template>
+  <ul @click="clickHander">
+    <li v-for="(item, index) in pages" :key="index" :data-path="item.path" >{{ item.title }}</li>
+  </ul>
+</template>
+
+<script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
+
+const goPage = (path = '/') => router.push({ path })
+const clickHander = (e) => {
+  if (!e.target) return
+  goPage(e.target.dataset.path || '/')
+}
+
+const pages = [
+  {
+    path: '/draw-base',
+    title: '绘制几何体',
+  },
+  {
+    path: '/hover-face',
+    title: '鼠标hover几何体face变色',
+  },
+  {
+    path: '/stair',
+    title: '绘制楼梯',
+  },
+  {
+    path: '/drag',
+    title: '拖拽几何体',
+  },
+  {
+    path: '/stretch',
+    title: '拉伸几何体',
+  },
+]
+</script>
+
+<style lang="scss" scoped>
+
+</style>
