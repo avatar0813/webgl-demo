@@ -51,7 +51,7 @@ const initScene = () => {
 // 获取几何图形
 function getCube(x = 0, y = 0, z = 0) {
   const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-  const material = new THREE.MeshBasicMaterial( { color: '#8c8f88' } );
+  const material = new THREE.MeshMatcapMaterial( { color: 0x8c8f88 } );
   const cube = new THREE.Mesh( geometry, material );
 
   cube.position.x = x
