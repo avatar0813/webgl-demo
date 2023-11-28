@@ -18,6 +18,13 @@ onMounted(() => {
 const initScene = () => {
   // 场景
   const scene = new THREE.Scene()
+  scene.background = new THREE.Color('#b6d4ff')
+  // 添加坐标轴网格线支持
+  const axesHelper = new THREE.AxesHelper( 20 );
+  const gridHelper = new THREE.GridHelper( 20, 20 );
+  scene.add( axesHelper ).add( gridHelper );
+
+
   // 相机
   /**
    * fov: 视野角度
@@ -26,23 +33,32 @@ const initScene = () => {
    * far: 远端面
    */
   const camera = new THREE.PerspectiveCamera(45, container.value.clientWidth / container.value.clientHeight, 1, 1000)
-  // 渲染
+  camera.position.z = 10;
+  camera.position.x = 2;
+  camera.position.y = 2;
+
+  // 添加几何图形
+  const cube = getCube(1,1,1)
+  scene.add(cube)
+
+   // 渲染
   const renderer = new THREE.WebGLRenderer()
   renderer.setSize(container.value.clientWidth, container.value.clientHeight)
   container.value.appendChild( renderer.domElement );
-  // 立方体
-  const geometry = new THREE.BoxGeometry( 3, 3, 1 );
-  // 材质
-  const material = new THREE.MeshBasicMaterial( { color: '#8f9399' } );
-  // 网格
-  const cube = new THREE.Mesh( geometry, material );
-  cube.rotation.x = 10
-  cube.rotation.y = 20
-  // 添加到场景中
-  scene.add(cube)
-  camera.position.z = 10;
-
   renderer.render( scene, camera );
+}
+
+// 获取几何图形
+function getCube(x = 0, y = 0, z = 0) {
+  const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+  const material = new THREE.MeshBasicMaterial( { color: '#8c8f88' } );
+  const cube = new THREE.Mesh( geometry, material );
+  console.log('rube:', cube)
+
+  cube.position.x = x
+  cube.position.y = y
+  cube.position.z = z
+  return cube
 }
 
 
