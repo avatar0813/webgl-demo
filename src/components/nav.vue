@@ -36,6 +36,10 @@ const pages = [
     path: '/stretch',
     title: '拉伸几何体',
   },
+  {
+    path: '/geometry',
+    title: '自定义几何体',
+  },
 ]
 </script>
 

@@ -29,6 +29,11 @@ const routes = [
     name: 'stretch',
     component: () => import('@/views/stretch.vue')
   },
+  {
+    path: '/geometry',
+    name: 'geometry',
+    component: () => import('@/views/geometry.vue')
+  },
 ]
 
 export default routes
