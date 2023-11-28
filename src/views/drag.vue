@@ -7,6 +7,7 @@
 
 <script setup>
 import * as THREE from 'three'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { DragControls } from 'three/addons/controls/DragControls.js';
 
 import { onMounted, ref } from 'vue'
@@ -26,7 +27,6 @@ const initScene = () => {
   const gridHelper = new THREE.GridHelper( 20, 20 );
   scene.add( axesHelper ).add( gridHelper );
 
-
   // 2、创建相机
   const camera = new THREE.PerspectiveCamera(45, container.value.clientWidth / container.value.clientHeight, 1, 1000)
   camera.position.z = 10;
@@ -41,11 +41,20 @@ const initScene = () => {
   const renderer = new THREE.WebGLRenderer()
   renderer.setSize(container.value.clientWidth, container.value.clientHeight)
   container.value.appendChild( renderer.domElement );
-  renderer.render( scene, camera );
 
-  // 5、添加拖放控制
-  const controls = new DragControls([cube], camera, renderer.domElement)
-  controls.addEventListener('drag', (e) => {
+  // 5、添加轨道控制器 实现三维拖动
+  const orbitControl = new OrbitControls(camera, renderer.domElement)
+
+  // 6、添加拖放控制
+  const dragControl = new DragControls([cube], camera, renderer.domElement)
+  // 拖动时禁用轨道控制器
+  dragControl.addEventListener('dragstart', () => {
+    orbitControl.enabled = false
+  })
+  dragControl.addEventListener('dragend', () => {
+    orbitControl.enabled = true
+  })
+  dragControl.addEventListener('drag', (e) => {
     // 拖动时修改几何图形坐标并重新渲染
     const position = e.object.position
     cube.position.x = position.x
@@ -53,12 +62,19 @@ const initScene = () => {
     cube.position.z = position.z
     renderer.render( scene, camera );
   })
+
+  function animate() {
+    requestAnimationFrame(animate)
+    orbitControl.update()
+    renderer.render(scene, camera)
+  }
+  animate()
 }
 
 // 获取几何图形
 function getCube(x = 0, y = 0, z = 0) {
   const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-  const material = new THREE.MeshBasicMaterial( { color: '#8c8f88' } );
+  const material = new THREE.MeshMatcapMaterial( { color: 0x8c8f88 } )
   const cube = new THREE.Mesh( geometry, material );
 
   cube.position.x = x
