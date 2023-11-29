@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>自定义几何体</h3>
+    <h3>自定义几何体:通过顶点点位绘制几何体</h3>
     <div ref="container" class="container"></div>
   </div>
 </template>
@@ -67,11 +67,12 @@ const initScene = () => {
   ])
   geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
   geometry.setIndex(new THREE.BufferAttribute(indexs, 1))
+  
+  const material = new THREE.MeshMatcapMaterial( { color: 0xffffff, side: THREE.DoubleSide } )
+  // @note 非基础材质需要定义法向量才能有光影效果
   geometry.computeVertexNormals()
-  let material = new THREE.MeshMatcapMaterial( { color: 0xffffff, side: THREE.DoubleSide } )
   const cube = new THREE.Mesh(geometry, material)
   scene.add(cube)
-  console.log('geometry:', geometry)
 
    // 4、初始渲染
   const renderer = new THREE.WebGLRenderer()

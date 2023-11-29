@@ -21,6 +21,10 @@ const pages = [
     title: '绘制几何体',
   },
   {
+    path: '/geometry',
+    title: '自定义几何体',
+  },
+  {
     path: '/hover-face',
     title: '鼠标hover几何体face变色',
   },
@@ -35,10 +39,6 @@ const pages = [
   {
     path: '/stretch',
     title: '拉伸几何体',
-  },
-  {
-    path: '/geometry',
-    title: '自定义几何体',
   },
 ]
 </script>
