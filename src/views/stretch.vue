@@ -97,7 +97,7 @@ const geometry = new THREE.PolyhedronGeometry(verticesOfCube, indicesOfFaces, 2,
     )
 
     // 偏移量
-    const offsetValue = 1.1
+    const offsetValue = 1.01
     console.log('index1:', indexA, indexB, indexC)
     const scaleDirection = planeNormal.clone().multiplyScalar(offsetValue)
     indexA.add(scaleDirection)
@@ -109,15 +109,10 @@ const geometry = new THREE.PolyhedronGeometry(verticesOfCube, indicesOfFaces, 2,
     for (let i = 0; i < faceArr.length; i++) {
       const vertice = faceArr[i]
       const index = indexArr[i]
-      console.log('设置位置', vertice, index.x, index.y, index.z)
       geometry.attributes.position.setXYZ(vertice, index.x, index.y, index.z)
     }
 
-    console.warn(geometry.attributes.position)
-    geometry.attributes.position.needUpdate = true
-    geometry.computeBoundingBox()
-    geometry.computeBoundingSphere()
-    geometry.computeVertexNormals()
+    geometry.attributes.position.needsUpdate = true
     renderer.render( scene, camera )
     normalsHelper.update()
   }
@@ -136,13 +131,6 @@ const geometry = new THREE.PolyhedronGeometry(verticesOfCube, indicesOfFaces, 2,
       // 在图形中点下，禁用滚动器
       orbitControl.enabled = false
       activeIntersect = intersects[0]
-
-      // const offsetVector = new THREE.Vector3(0.5, 0, 0)
-      // 找到顶点坐标
-      // 
-      // cube.position.add(offsetVector)
-      renderer.render( scene, camera )
-      normalsHelper.update()
     }
   }
   function onPointerUp() {
@@ -163,21 +151,6 @@ const geometry = new THREE.PolyhedronGeometry(verticesOfCube, indicesOfFaces, 2,
     renderer.render(  scene, camera );
   }
   animate()
-}
-
-/**
- * @name 修改几何体
- * @param {geometry} geo 几何体
- * @param {Index} index 顶点索引
- * @param {Object} skews 偏移量对象
- */
-function changeGeoPosition(geo, index, skews = {}) {
-  const originX = geo.attributes.position.getX(index)
-  const originY = geo.attributes.position.getY(index)
-  const originZ = geo.attributes.position.getZ(index)
-  const { x, y, z } = skews
-  geo.attributes.position.setXYZ(index, originX + x, originY + y, originZ + z)
-  return geo
 }
 </script>
 
