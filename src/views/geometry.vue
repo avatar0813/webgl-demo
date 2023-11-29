@@ -75,7 +75,7 @@ const initScene = () => {
   scene.add(cube)
 
    // 4、初始渲染
-  const renderer = new THREE.WebGLRenderer()
+  const renderer = new THREE.WebGLRenderer({ antialias: true })
   renderer.setSize(container.value.clientWidth, container.value.clientHeight)
   container.value.appendChild( renderer.domElement )
   const oibitControl = new OrbitControls(camera, renderer.domElement)

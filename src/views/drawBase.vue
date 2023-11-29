@@ -7,6 +7,8 @@
 
 <script setup>
 import * as THREE from 'three'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
 import { onMounted, ref } from 'vue'
 
 const container = ref(null)
@@ -42,10 +44,17 @@ const initScene = () => {
   scene.add(cube)
 
    // 渲染
-  const renderer = new THREE.WebGLRenderer()
+  const renderer = new THREE.WebGLRenderer({ antialias: true })
   renderer.setSize(container.value.clientWidth, container.value.clientHeight)
-  container.value.appendChild( renderer.domElement );
-  renderer.render( scene, camera );
+  container.value.appendChild( renderer.domElement )
+  const oibitControl = new OrbitControls(camera, renderer.domElement)
+
+  function animate() {
+    requestAnimationFrame(animate)
+    oibitControl.update()
+    renderer.render(scene, camera)
+  }
+  animate()
 }
 
 // 获取几何图形

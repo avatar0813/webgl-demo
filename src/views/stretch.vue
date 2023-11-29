@@ -56,7 +56,7 @@ const initScene = () => {
   console.log('vertices', vertices, geometry)
 
    // 渲染
-  const renderer = new THREE.WebGLRenderer()
+  const renderer = new THREE.WebGLRenderer({ antialias: true })
   renderer.setSize(containerDom.clientWidth, containerDom.clientHeight)
   containerDom.appendChild( renderer.domElement );
 
