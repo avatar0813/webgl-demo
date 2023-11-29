@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-
+import { geoIndex } from '@/utils'
 /**
  * @name 通用生成几何体
  * @param {Float32Array} vertices 顶点坐标
@@ -48,25 +48,7 @@ export function getStepStart() {
     stepWidth, stepHeight, stairWidth,
     0, stepHeight, stairWidth,
   ])
-  const indexs = new Uint16Array([
-    0,1,2, // 背面
-    0,2,3,
-
-    0,4,7, // 左面
-    0,7,3,
-
-    0,4,5, // 底面
-    0,1,5,
-
-    4,5,6, // 正面
-    4,6,7,
-
-    2,5,6, // 右面
-    1,5,2,
-
-    2,3,6, // 顶部
-    3,7,6
-  ])
+  const indexs = geoIndex()
   const material = new THREE.MeshMatcapMaterial( { color: 0xff1c1c, side: THREE.DoubleSide } )
   const cube = commonGenerateGeometry(vertices, indexs, material)
   return cube
@@ -85,25 +67,8 @@ export function getStep() {
     stepWidth, stepHeight * 2, stairWidth,
     0, stepHeight * 2, stairWidth,
   ])
-  const indexs = new Uint16Array([
-    0,1,2, // 背面
-    0,2,3,
+  const indexs = geoIndex()
 
-    0,4,7, // 左面
-    0,7,3,
-
-    0,4,5, // 底面
-    0,1,5,
-
-    4,5,6, // 正面
-    4,6,7,
-
-    2,5,6, // 右面
-    1,5,2,
-
-    2,3,6, // 顶部
-    3,7,6
-  ])
   const material = new THREE.MeshMatcapMaterial( { color: 0xff1c1c, side: THREE.DoubleSide } )
   const cube = commonGenerateGeometry(vertices, indexs, material)
   return cube
@@ -123,25 +88,8 @@ export function getPlat() {
     platWidth, platHeight, stairAllWidth,
     0, platHeight, stairAllWidth,
   ])
-  const greenIndexs = new Uint16Array([
-    0,1,2, // 背面
-    0,2,3,
+  const greenIndexs = geoIndex()
 
-    0,4,7, // 左面
-    0,7,3,
-
-    0,4,5, // 底面
-    0,1,5,
-
-    4,5,6, // 正面
-    4,6,7,
-
-    2,5,6, // 右面
-    1,5,2,
-
-    2,3,6, // 顶部
-    3,7,6
-  ])
   const greenMaterial = new THREE.MeshMatcapMaterial( { color: 0x6cffff, side: THREE.DoubleSide } )
   const greenCube = commonGenerateGeometry(greenVertices, greenIndexs, greenMaterial)
   // 偏移出一个连接处位置
@@ -160,25 +108,8 @@ export function getPlat() {
     platInterWidth, platInterHeight, stairAllWidth,
     0, platInterHeight, stairAllWidth,
   ])
-  const yellowIndexs = new Uint16Array([
-    0,1,2, // 背面
-    0,2,3,
+  const yellowIndexs = geoIndex()
 
-    0,4,7, // 左面
-    0,7,3,
-
-    0,4,5, // 底面
-    0,1,5,
-
-    4,5,6, // 正面
-    4,6,7,
-
-    2,5,6, // 右面
-    1,5,2,
-
-    2,3,6, // 顶部
-    3,7,6
-  ])
   const yellowMaterial = new THREE.MeshMatcapMaterial( { color: 0xffff6c, side: THREE.DoubleSide } )
   const yellowCube = commonGenerateGeometry(yellowVertices, yellowIndexs, yellowMaterial)
   group.add(yellowCube)
@@ -199,25 +130,8 @@ export function getWell() {
     wellLength, wellHeight, wellWidth,
     0, wellHeight, wellWidth,
   ])
-  const indexs = new Uint16Array([
-    0,1,2, // 背面
-    0,2,3,
-
-    0,4,7, // 左面
-    0,7,3,
-
-    0,4,5, // 底面
-    0,1,5,
-
-    4,5,6, // 正面
-    4,6,7,
-
-    2,5,6, // 右面
-    1,5,2,
-
-    2,3,6, // 顶部
-    3,7,6
-  ])
+  const indexs = geoIndex()
+  
   const material = new THREE.MeshMatcapMaterial( { color: 0x6c6cff, side: THREE.DoubleSide } )
   const cube = commonGenerateGeometry(vertices, indexs, material)
   return cube
