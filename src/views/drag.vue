@@ -54,14 +54,6 @@ const initScene = () => {
   dragControl.addEventListener('dragend', () => {
     orbitControl.enabled = true
   })
-  dragControl.addEventListener('drag', (e) => {
-    // 拖动时修改几何图形坐标并重新渲染
-    const position = e.object.position
-    cube.position.x = position.x
-    cube.position.y = position.y
-    cube.position.z = position.z
-    renderer.render( scene, camera );
-  })
 
   function animate() {
     requestAnimationFrame(animate)

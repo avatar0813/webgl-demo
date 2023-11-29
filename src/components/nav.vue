@@ -40,6 +40,10 @@ const pages = [
     path: '/stretch',
     title: '拉伸几何体',
   },
+  {
+    path: '/test',
+    title: 'test',
+  },
 ]
 </script>
 
