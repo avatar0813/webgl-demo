@@ -17,7 +17,7 @@ const routes = [
   {
     path: '/stair',
     name: 'stair',
-    component: () => import('@/views/stair.vue')
+    component: () => import('@/views/stair/index.vue')
   },
   {
     path: '/drag',
