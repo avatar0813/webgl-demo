@@ -27,7 +27,7 @@ const pages = [
   {
     path: '/hover-face',
     title: '鼠标hover几何体face变色',
-  },
+  }, 
   {
     path: '/stair',
     title: '绘制楼梯',

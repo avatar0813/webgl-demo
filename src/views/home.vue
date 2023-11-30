@@ -1,5 +1,5 @@
 <template>
-  <h1>webgl练习</h1>
+  <h1>webgl threejs练习</h1>
 </template>
 
 <script setup>
