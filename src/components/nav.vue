@@ -43,8 +43,12 @@ const pages = [
 ]
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .nav{
-  padding: 12px;
+  @apply p-6;
+
+  & li{
+    @apply text-Slate-900 p-1 w-100 wd-600 hover:(font-bold) cursor-pointer;
+  }
 }
 </style>
