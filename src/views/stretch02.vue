@@ -33,27 +33,8 @@ const initScene = () => {
 
   // 3、添加几何图形
   // 顶点
-  const verticesOfCube  = new Float32Array([
-    1,0,0,
-    0,0,-1,
-    -1,0,0,
-    0,0,1,
-    0,1,0,
-    0,-1,0
-  ])
-  const indicesOfFaces = [
-      0,1,4,
-      1,2,4,
-      2,3,4,
-      3,0,4,
-      0,5,1,
-      1,5,2,
-      2,5,3,
-      3,5,0
-
-  ]
-  const geometry = new THREE.PolyhedronGeometry(verticesOfCube, indicesOfFaces, 2, 0)
-  geometry.setIndex = new THREE.Uint16BufferAttribute(indicesOfFaces)
+  const geometry = new THREE.BoxGeometry()
+  geometry.computeVertexNormals()
   const materials = new THREE.MeshMatcapMaterial( { color: 0xffffff, side: THREE.DoubleSide } )
   const cube = new THREE.Mesh( geometry, materials );
   scene.add(cube)
@@ -72,7 +53,6 @@ const initScene = () => {
   let activeIntersect = null
   let p1 = new THREE.Vector3()
   let p2 = new THREE.Vector3()
-  let downP = new THREE.Vector3() // @note
 
   function onPointerMove(event) {
     if (!activeInCube) return
@@ -84,11 +64,10 @@ const initScene = () => {
     p2 = new THREE.Vector3(pointer.x, pointer.y, 0).unproject(camera)
 
     const face = activeIntersect.face
+    const faceIndex = activeIntersect.faceIndex
     const planeNormal = activeIntersect.normal // 平面法向量
     const verticeIndexArr = [] // 顶点索引集合
     const dot = planeNormal.clone().multiplyScalar((p2.clone().sub(p1.clone())).dot(planeNormal.clone()))
-    // console.log('p1-p2:', p1, p2, (p2.clone().sub(p1.clone())).dot(planeNormal.clone()), dot)
-    console.log('p2:', p2, downP)
     p1.copy(p2)
 
     // 一个面有3个点，记录每个点的position信息(x, y, z)
@@ -103,6 +82,25 @@ const initScene = () => {
       geometry.attributes.position.getY(face.c),
       geometry.attributes.position.getZ(face.c),
     ]
+    // 找到正方体的另一个点
+    // 如果当前面faceIndex 是偶数, 则另一个三角形 faceIndex 是偶数 - 1, 
+    // 这另一个顶点是maxPositionIndex + 1
+    // 反之 另一个订单时minPositionIndex - 1
+    if (faceIndex % 2 === 0) {
+      const max = Math.max(face.a, face.b, face.c)
+      positionArr.push(
+        geometry.attributes.position.getX(max + 1),
+        geometry.attributes.position.getY(max + 1),
+        geometry.attributes.position.getZ(max + 1),
+      )
+    } else {
+      const min = Math.min(face.a, face.b, face.c)
+      positionArr.push(
+        geometry.attributes.position.getX(min - 1),
+        geometry.attributes.position.getY(min - 1),
+        geometry.attributes.position.getZ(min - 1),
+      )
+    }
 
     // position.arr上找到位置
     const geoPSArr = geometry.attributes.position.array
@@ -114,6 +112,7 @@ const initScene = () => {
         positionArr[0] === ps0 && positionArr[1] === ps1 && positionArr[2] === ps2
         || positionArr[3] === ps0 && positionArr[4] === ps1 && positionArr[5] === ps2
         || positionArr[6] === ps0 && positionArr[7] === ps1 && positionArr[8] === ps2
+        || positionArr[9] === ps0 && positionArr[10] === ps1 && positionArr[11] === ps2
       ) {
         verticeIndexArr.push(i / 3)
       }
@@ -143,7 +142,6 @@ const initScene = () => {
     if (intersects.length > 0) {
       // 获取点击点世界坐标
       p1 = new THREE.Vector3(pointer.x, pointer.y, 0).unproject(camera)
-      downP = p1.clone()
       activeInCube = true
       // 在图形中点下，禁用滚动器
       orbitControl.enabled = false
