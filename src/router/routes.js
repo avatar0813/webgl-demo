@@ -34,11 +34,6 @@ const routes = [
     name: 'geometry',
     component: () => import('@/views/geometry.vue')
   },
-  {
-    path: '/test',
-    name: 'test',
-    component: () => import('@/views/test.vue')
-  },
 ]
 
 export default routes

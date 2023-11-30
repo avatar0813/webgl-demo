@@ -1,5 +1,5 @@
 <template>
-  <h1>新手楼梯任务</h1>
+  <h1>webgl练习</h1>
 </template>
 
 <script setup>

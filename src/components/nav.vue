@@ -1,5 +1,5 @@
 <template>
-  <ul @click="clickHander">
+  <ul class="nav" @click="clickHander">
     <li v-for="(item, index) in pages" :key="index" :data-path="item.path" >{{ item.title }}</li>
   </ul>
 </template>
@@ -40,13 +40,11 @@ const pages = [
     path: '/stretch',
     title: '拉伸几何体',
   },
-  {
-    path: '/test',
-    title: 'test',
-  },
 ]
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
+.nav{
+  padding: 12px;
+}
 </style>
