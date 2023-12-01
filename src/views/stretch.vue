@@ -78,8 +78,8 @@ const initScene = () => {
     if (!activeInCube) return
 
     const rect = containerDom.getBoundingClientRect()
-    pointer.x = ( (event.clientX - rect.x) / renderer.domElement.clientWidth ) * 2 - 1;
-    pointer.y = - ( (event.clientY - rect.y) / renderer.domElement.clientHeight ) * 2 + 1;
+    pointer.x =  (event.clientX - rect.left) / rect.width * 2 - 1;
+    pointer.y = -  (event.clientY - rect.top) / rect.height * 2 + 1;
     raycaster.setFromCamera( pointer, camera )
     p2 = new THREE.Vector3(pointer.x, pointer.y, 0).unproject(camera)
 
@@ -135,8 +135,8 @@ const initScene = () => {
   function onpointerDown(event) {
 
     const rect = containerDom.getBoundingClientRect()
-    pointer.x = ( (event.clientX - rect.x) / renderer.domElement.clientWidth ) * 2 - 1;
-    pointer.y = - ( (event.clientY - rect.y) / renderer.domElement.clientHeight ) * 2 + 1;
+    pointer.x =  (event.clientX - rect.left) / rect.width * 2 - 1;
+    pointer.y = -  (event.clientY - rect.top) / rect.height * 2 + 1;
     raycaster.setFromCamera( pointer, camera )
     const intersects = raycaster.intersectObject(cube)
     

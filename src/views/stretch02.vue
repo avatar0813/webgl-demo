@@ -22,8 +22,9 @@ const initScene = () => {
   // 1、场景 及 添加坐标轴网格线支持
   const scene = new THREE.Scene()
   scene.background = new THREE.Color(0xb6d4ff)
-  const axesHelper = new THREE.AxesHelper( 20 );
-  scene.add( axesHelper )
+  // @note 坐标轴辅助
+  // const axesHelper = new THREE.AxesHelper( 20 );
+  // scene.add( axesHelper )
 
   // 2、相机 调整初始相机角度
   const camera = new THREE.PerspectiveCamera(45, containerDom.clientWidth / containerDom.clientHeight, 1, 5000)
@@ -32,7 +33,6 @@ const initScene = () => {
   camera.position.y = 5
 
   // 3、添加几何图形
-  // 顶点
   const geometry = new THREE.BoxGeometry()
   geometry.computeVertexNormals()
   const materials = new THREE.MeshMatcapMaterial( { color: 0xffffff, side: THREE.DoubleSide } )
@@ -43,31 +43,55 @@ const initScene = () => {
   const renderer = new THREE.WebGLRenderer({ antialias: true })
   renderer.setSize(containerDom.clientWidth, containerDom.clientHeight)
   containerDom.appendChild( renderer.domElement )
-  // 添加轨道控制器 使其可以拖动切换视角
   const orbitControl = new OrbitControls(camera, renderer.domElement);
 
   // 5、添加射线 判断是否点击在几何体上
   const raycaster = new THREE.Raycaster()
   const pointer = new THREE.Vector2()
-  let activeInCube = false
-  let activeIntersect = null
-  let p1 = new THREE.Vector3()
-  let p2 = new THREE.Vector3()
+  let plane = new THREE.Plane()
+  let intersects = []
+  const p1 = new THREE.Vector3()
+  const p2 = new THREE.Vector3()
+  // @note 平面辅助
+  // const planeHelper = new THREE.PlaneHelper( plane, 10, 0xffff00 );
+  // scene.add( planeHelper );
 
-  function onPointerMove(event) {
-    if (!activeInCube) return
+  // 6、添加拖放控制
+  function onpointerDown(event) {
 
     const rect = containerDom.getBoundingClientRect()
-    pointer.x = ( (event.clientX - rect.x) / renderer.domElement.clientWidth ) * 2 - 1;
-    pointer.y = - ( (event.clientY - rect.y) / renderer.domElement.clientHeight ) * 2 + 1;
+    pointer.x =  (event.clientX - rect.left) / rect.width * 2 - 1;
+    pointer.y = -  (event.clientY - rect.top) / rect.height * 2 + 1;
     raycaster.setFromCamera( pointer, camera )
-    p2 = new THREE.Vector3(pointer.x, pointer.y, 0).unproject(camera)
+    intersects = raycaster.intersectObject(cube) || []
+    if (intersects.length > 0) {
+      // 获取点击点世界坐标
+      // 根据相机法向量和场景原点创建平面
+      const planeNormal = new THREE.Vector3()
+      planeNormal.copy(camera.position).normalize()
+      plane.setFromNormalAndCoplanarPoint(planeNormal, scene.position)
+      raycaster.ray.intersectPlane(plane, p1)
 
-    const face = activeIntersect.face
-    const faceIndex = activeIntersect.faceIndex
-    const planeNormal = activeIntersect.normal // 平面法向量
+      // 在图形中点下，禁用滚动器
+      orbitControl.enabled = false
+      containerDom.style = 'cursor:pointer'
+    }
+  }
+
+  function onPointerMove(event) {
+    if (intersects.length === 0) return
+
+    const rect = containerDom.getBoundingClientRect()
+    pointer.x =  (event.clientX - rect.left) / rect.width * 2 - 1;
+    pointer.y = -  (event.clientY - rect.top) / rect.height * 2 + 1;
+    raycaster.setFromCamera( pointer, camera )
+    
+    raycaster.ray.intersectPlane(plane, p2)
+    const face = intersects[0].face
+    const faceIndex = intersects[0].faceIndex
+    const planeNormal = intersects[0].normal // 平面法向量
     const verticeIndexArr = [] // 顶点索引集合
-    const dot = planeNormal.clone().multiplyScalar((p2.clone().sub(p1.clone())).dot(planeNormal.clone()))
+    const offsetDirection = planeNormal.clone().multiplyScalar((p2.clone().sub(p1.clone())).dot(planeNormal))
     p1.copy(p2)
 
     // 一个面有3个点，记录每个点的position信息(x, y, z)
@@ -124,40 +148,21 @@ const initScene = () => {
         geometry.attributes.position.getX(index),
         geometry.attributes.position.getY(index),
         geometry.attributes.position.getZ(index),
-      ).add(dot)
+      ).add(offsetDirection)
       geometry.attributes.position.setXYZ(index, originPointer.x, originPointer.y, originPointer.z)
     })
     geometry.attributes.position.needsUpdate = true
   }
 
-  // 6、添加拖放控制
-  function onpointerDown(event) {
-
-    const rect = containerDom.getBoundingClientRect()
-    pointer.x = ( (event.clientX - rect.x) / renderer.domElement.clientWidth ) * 2 - 1;
-    pointer.y = - ( (event.clientY - rect.y) / renderer.domElement.clientHeight ) * 2 + 1;
-    raycaster.setFromCamera( pointer, camera )
-    const intersects = raycaster.intersectObject(cube)
-    
-    if (intersects.length > 0) {
-      // 获取点击点世界坐标
-      p1 = new THREE.Vector3(pointer.x, pointer.y, 0).unproject(camera)
-      activeInCube = true
-      // 在图形中点下，禁用滚动器
-      orbitControl.enabled = false
-      activeIntersect = intersects[0]
-    }
-  }
   function onPointerUp() {
-    activeInCube = false
-    activeIntersect = null
+    intersects = []
     orbitControl.enabled = true
+    containerDom.style = 'cursor:auto'
   }
 
   containerDom.addEventListener('pointerdown', onpointerDown );
   containerDom.addEventListener('pointermove', onPointerMove );
   containerDom.addEventListener('pointerup', onPointerUp );
-  
 
   function animate() {
     requestAnimationFrame(animate)
