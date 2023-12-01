@@ -10,6 +10,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 import { onMounted, ref } from 'vue'
+import { getXYZByIndex, diffXYZByIndex } from '@/utils'
 
 const container = ref(null)
 
@@ -94,61 +95,35 @@ const initScene = () => {
     const offsetDirection = planeNormal.clone().multiplyScalar((p2.clone().sub(p1.clone())).dot(planeNormal))
     p1.copy(p2)
 
-    // 一个面有3个点，记录每个点的position信息(x, y, z)
-    const positionArr = [
-      geometry.attributes.position.getX(face.a),
-      geometry.attributes.position.getY(face.a),
-      geometry.attributes.position.getZ(face.a),
-      geometry.attributes.position.getX(face.b),
-      geometry.attributes.position.getY(face.b),
-      geometry.attributes.position.getZ(face.b),
-      geometry.attributes.position.getX(face.c),
-      geometry.attributes.position.getY(face.c),
-      geometry.attributes.position.getZ(face.c),
-    ]
+    const indexArr = [face.a, face.b, face.c]
     // 找到正方体的另一个点
     // 如果当前面faceIndex 是偶数, 则另一个三角形 faceIndex 是偶数 - 1, 
     // 这另一个顶点是maxPositionIndex + 1
     // 反之 另一个订单时minPositionIndex - 1
     if (faceIndex % 2 === 0) {
       const max = Math.max(face.a, face.b, face.c)
-      positionArr.push(
-        geometry.attributes.position.getX(max + 1),
-        geometry.attributes.position.getY(max + 1),
-        geometry.attributes.position.getZ(max + 1),
-      )
+      indexArr.push(max + 1)
     } else {
       const min = Math.min(face.a, face.b, face.c)
-      positionArr.push(
-        geometry.attributes.position.getX(min - 1),
-        geometry.attributes.position.getY(min - 1),
-        geometry.attributes.position.getZ(min - 1),
-      )
+      indexArr.push(min - 1)
     }
 
-    // position.arr上找到位置
-    const geoPSArr = geometry.attributes.position.array
-    for (let i = 0; i < geoPSArr.length; i+=3) {
-      const ps0 = geoPSArr[i]
-      const ps1 = geoPSArr[i + 1]
-      const ps2 = geoPSArr[i + 2]
+    const geoCount = geometry.attributes.position.count
+    for(let i = 0; i < geoCount; i++) {
       if (
-        positionArr[0] === ps0 && positionArr[1] === ps1 && positionArr[2] === ps2
-        || positionArr[3] === ps0 && positionArr[4] === ps1 && positionArr[5] === ps2
-        || positionArr[6] === ps0 && positionArr[7] === ps1 && positionArr[8] === ps2
-        || positionArr[9] === ps0 && positionArr[10] === ps1 && positionArr[11] === ps2
+        diffXYZByIndex(geometry, i, indexArr[0]) 
+        || diffXYZByIndex(geometry, i, indexArr[1])
+        || diffXYZByIndex(geometry, i, indexArr[2])  
+        || diffXYZByIndex(geometry, i, indexArr[3])  
       ) {
-        verticeIndexArr.push(i / 3)
+        verticeIndexArr.push(i)
       }
     }
 
     // 设置新旧顶点坐标
     verticeIndexArr.forEach(index => {
-      const originPointer = new THREE.Vector3(
-        geometry.attributes.position.getX(index),
-        geometry.attributes.position.getY(index),
-        geometry.attributes.position.getZ(index),
-      ).add(offsetDirection)
+      const {x, y, z} = getXYZByIndex(geometry, index)
+      const originPointer = new THREE.Vector3(x, y, z).add(offsetDirection)
       geometry.attributes.position.setXYZ(index, originPointer.x, originPointer.y, originPointer.z)
     })
     geometry.attributes.position.needsUpdate = true
@@ -163,6 +138,7 @@ const initScene = () => {
   containerDom.addEventListener('pointerdown', onpointerDown );
   containerDom.addEventListener('pointermove', onPointerMove );
   containerDom.addEventListener('pointerup', onPointerUp );
+
 
   function animate() {
     requestAnimationFrame(animate)
