@@ -1,3 +1,7 @@
+/**
+ * @name 获取标准正方体face索引
+ * @returns Uint16Array
+ */
 export const geoIndex = () => new Uint16Array([
   // 逆时针
   0,1,2, // 背面

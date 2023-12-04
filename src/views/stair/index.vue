@@ -25,14 +25,14 @@ const initScene = () => {
   const camera = getCamera(containerDom)
   // 3、初始渲染
   const renderer = getRenderer(containerDom)
-  const oibitControl = new OrbitControls(camera, renderer.domElement)
+  const orbitControl = new OrbitControls(camera, renderer.domElement)
 
   // 4、创建图形
   scene.add(getStair())
   
   function animate() {
     requestAnimationFrame(animate)
-    oibitControl.update()
+    orbitControl.update()
     renderer.render(scene, camera)
   }
   animate()

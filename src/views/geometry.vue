@@ -7,32 +7,41 @@
 
 <script setup>
 import * as THREE from 'three'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
 import { onMounted, ref } from 'vue'
+import {
+  createScene,
+  createPerspectiveCamera,
+  createRenderer,
+  createAnimate,
+} from '@/utils/three/eidtor'
+
+import {
+  createOrbitControls
+} from '@/utils/three/addon'
 
 const container = ref(null)
 
 onMounted(() => {
-  initScene()
-})
-
-const initScene = () => {
-  // 1、创建场景
-  const scene = new THREE.Scene()
-  scene.background = new THREE.Color('#b6d4ff')
-  // 添加坐标轴网格线支持
+  const containDom = container.value
+  // 创建场景
   const axesHelper = new THREE.AxesHelper( 20 )
   const gridHelper = new THREE.GridHelper( 20, 20 )
-  scene.add( axesHelper ).add( gridHelper )
+  const scene = createScene({ background: 0xb6d4ff }, [axesHelper, gridHelper])
+  const camera = createPerspectiveCamera({ aspect: containDom.clientWidth / containDom.clientHeight })
+  const renderer = createRenderer(containDom)
+  const orbitControl = createOrbitControls(camera, renderer.domElement)
 
-  // 2、创建相机
-  const camera = new THREE.PerspectiveCamera(45, container.value.clientWidth / container.value.clientHeight, 1, 1000)
-  camera.position.z = 10
-  camera.position.x = 2
-  camera.position.y = 2
-  
-  // 3、添加几何图形
+  const cube = createCube()
+  scene.add(cube)
+
+  const animateCbs = [orbitControl.update]
+  const animate = createAnimate(scene, camera, renderer, animateCbs)
+  animate()
+})
+
+// 创建图形
+function createCube() {
+  // 添加几何图形
   const geometry = new THREE.BufferGeometry()
 
   // 顶点
@@ -65,27 +74,14 @@ const initScene = () => {
     2,3,6, // 顶部
     3,7,6
   ])
+  
   geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
   geometry.setIndex(new THREE.BufferAttribute(indexs, 1))
-  
   const material = new THREE.MeshMatcapMaterial( { color: 0xffffff, side: THREE.DoubleSide } )
-  // @note 非基础材质需要定义法向量才能有光影效果
   geometry.computeVertexNormals()
   const cube = new THREE.Mesh(geometry, material)
-  scene.add(cube)
 
-   // 4、初始渲染
-  const renderer = new THREE.WebGLRenderer({ antialias: true })
-  renderer.setSize(container.value.clientWidth, container.value.clientHeight)
-  container.value.appendChild( renderer.domElement )
-  const oibitControl = new OrbitControls(camera, renderer.domElement)
-
-  function animate() {
-    requestAnimationFrame(animate)
-    oibitControl.update()
-    renderer.render(scene, camera)
-  }
-  animate()
+  return cube
 }
 
 

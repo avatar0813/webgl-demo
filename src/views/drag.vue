@@ -7,61 +7,53 @@
 
 <script setup>
 import * as THREE from 'three'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { DragControls } from 'three/addons/controls/DragControls.js';
+
 
 import { onMounted, ref } from 'vue'
+import {
+  createScene,
+  createPerspectiveCamera,
+  createRenderer,
+  createAnimate,
+} from '@/utils/three/eidtor'
+import {
+  createOrbitControls,
+  createDragControls
+} from '@/utils/three/addon'
 
 const container = ref(null)
 
 onMounted(() => {
-  initScene()
-})
-
-const initScene = () => {
-  // 1、创建场景
-  const scene = new THREE.Scene()
-  scene.background = new THREE.Color('#b6d4ff')
-  // 添加坐标轴网格线支持
+  const containDom = container.value
+  // 创建场景
   const axesHelper = new THREE.AxesHelper( 20 );
   const gridHelper = new THREE.GridHelper( 20, 20 );
-  scene.add( axesHelper ).add( gridHelper );
-
-  // 2、创建相机
-  const camera = new THREE.PerspectiveCamera(45, container.value.clientWidth / container.value.clientHeight, 1, 1000)
-  camera.position.z = 10;
-  camera.position.x = 2;
-  camera.position.y = 2;
-
-  // 3、添加几何图形
+  const scene = createScene({ background: 0xb6d4ff }, [axesHelper, gridHelper])
+  const camera = createPerspectiveCamera({ aspect: containDom.clientWidth / containDom.clientHeight })
+  const renderer = createRenderer(containDom)
+  const orbitControl = createOrbitControls(camera, renderer.domElement)
+  // 添加几何图形
   const cube = getCube(1,1,1)
   scene.add(cube)
 
-   // 4、初始渲染
-  const renderer = new THREE.WebGLRenderer({ antialias: true })
-  renderer.setSize(container.value.clientWidth, container.value.clientHeight)
-  container.value.appendChild( renderer.domElement );
-
-  // 5、添加轨道控制器 实现三维拖动
-  const orbitControl = new OrbitControls(camera, renderer.domElement)
-
-  // 6、添加拖放控制
-  const dragControl = new DragControls([cube], camera, renderer.domElement)
-  // 拖动时禁用轨道控制器
-  dragControl.addEventListener('dragstart', () => {
-    orbitControl.enabled = false
-  })
-  dragControl.addEventListener('dragend', () => {
-    orbitControl.enabled = true
+  // 添加拖放控制
+  const dragControl = createDragControls({ 
+    objects: [cube],
+    camera,
+    dom: renderer.domElement,
+    dragstart() {
+      orbitControl.enabled = false
+    },
+    dragend() {
+      orbitControl.enabled = true
+    }
   })
 
-  function animate() {
-    requestAnimationFrame(animate)
-    orbitControl.update()
-    renderer.render(scene, camera)
-  }
+  const animateCbs = [orbitControl.update]
+  const animate = createAnimate(scene, camera, renderer, animateCbs)
   animate()
-}
+})
+
 
 // 获取几何图形
 function getCube(x = 0, y = 0, z = 0) {

@@ -7,10 +7,18 @@
 
 <script setup>
 import * as THREE from 'three'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
 import { onMounted, ref } from 'vue'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import {
+  createOrbitControls
+} from '@/utils/three/addon'
 import { getXYZByIndex, diffXYZByIndex } from '@/utils'
+import {
+  createScene,
+  createPerspectiveCamera,
+  createRenderer,
+  createAnimate,
+} from '@/utils/three/eidtor'
 
 const container = ref(null)
 
@@ -21,31 +29,39 @@ onMounted(() => {
 const initScene = () => {
   const containerDom = container.value
   // 1、场景 及 添加坐标轴网格线支持
-  const scene = new THREE.Scene()
-  scene.background = new THREE.Color(0xb6d4ff)
-  // @note 坐标轴辅助
-  // const axesHelper = new THREE.AxesHelper( 20 );
-  // scene.add( axesHelper )
+  const scene = createScene({ background: 0xb6d4ff })
+  const camera = createPerspectiveCamera({ aspect: containerDom.clientWidth / containerDom.clientHeight, far: 5000 })
+  const renderer = createRenderer(containerDom)
+  const orbitControl = createOrbitControls(camera, renderer.domElement)
 
-  // 2、相机 调整初始相机角度
-  const camera = new THREE.PerspectiveCamera(45, containerDom.clientWidth / containerDom.clientHeight, 1, 5000)
-  camera.position.z = 10
-  camera.position.x = 2
-  camera.position.y = 5
-
-  // 3、添加几何图形
-  const geometry = new THREE.BoxGeometry()
-  geometry.computeVertexNormals()
-  const materials = new THREE.MeshMatcapMaterial( { color: 0xffffff, side: THREE.DoubleSide } )
-  const cube = new THREE.Mesh( geometry, materials );
+  // 添加几何图形
+  const geometry = createGeometry()
+  const cube = createCube(geometry)
   scene.add(cube)
 
-   // 4、渲染
-  const renderer = new THREE.WebGLRenderer({ antialias: true })
-  renderer.setSize(containerDom.clientWidth, containerDom.clientHeight)
-  containerDom.appendChild( renderer.domElement )
-  const orbitControl = new OrbitControls(camera, renderer.domElement);
+  // 处理拉伸事件
+  stretchHandler({scene, containerDom, camera, cube, orbitControl })
 
+  const animateCbs = [orbitControl.update]
+  const animate = createAnimate(scene, camera, renderer, animateCbs)
+  animate()
+}
+
+function createGeometry() {
+  const geometry = new THREE.BoxGeometry()
+  geometry.computeVertexNormals()
+  return geometry
+}
+
+function createCube(geometry) {
+  
+  const materials = new THREE.MeshMatcapMaterial( { color: 0xffffff, side: THREE.DoubleSide } )
+  const cube = new THREE.Mesh( geometry, materials )
+  return cube
+}
+
+
+function stretchHandler({ scene, containerDom, camera, cube, orbitControl }) {
   // 5、添加射线 判断是否点击在几何体上
   const raycaster = new THREE.Raycaster()
   const pointer = new THREE.Vector2()
@@ -91,6 +107,7 @@ const initScene = () => {
     const face = intersects[0].face
     const faceIndex = intersects[0].faceIndex
     const planeNormal = intersects[0].normal // 平面法向量
+    const geometry = intersects[0].object.geometry
     const verticeIndexArr = [] // 顶点索引集合
     const offsetDirection = planeNormal.clone().multiplyScalar((p2.clone().sub(p1.clone())).dot(planeNormal))
     p1.copy(p2)
@@ -138,14 +155,6 @@ const initScene = () => {
   containerDom.addEventListener('pointerdown', onpointerDown );
   containerDom.addEventListener('pointermove', onPointerMove );
   containerDom.addEventListener('pointerup', onPointerUp );
-
-
-  function animate() {
-    requestAnimationFrame(animate)
-    orbitControl.update()
-    renderer.render(  scene, camera );
-  }
-  animate()
 }
 </script>
 
