@@ -7,75 +7,37 @@
 
 <script setup>
 import * as THREE from 'three'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
 import { ref, onMounted } from 'vue'
+import {
+  createScene,
+  createPerspectiveCamera,
+  createRenderer,
+  createAnimate,
+} from '@/utils/three/eidtor'
+import {
+  createOrbitControls
+} from '@/utils/three/addon'
 import { getStepStart, getStep, getWell, stepWidth, stepHeight, getPlat, stairWidth, wellWidth, wellHeight, platWidth, platInterWidth, wellLength, stairAllHeight } from './graph'
+
 const container = ref(null)
 
 onMounted(() => {
-  initScene()
-})
-
-const initScene = () => {
-  // 1、创建场景
+  // 创建场景
   const containerDom = container.value
-  const scene = getScene()
-  // 2、创建相机
-  const camera = getCamera(containerDom)
-  // 3、初始渲染
-  const renderer = getRenderer(containerDom)
-  const orbitControl = new OrbitControls(camera, renderer.domElement)
+  const axesHelper = new THREE.AxesHelper( 5000 )
+  const gridHelper = new THREE.GridHelper( 10000, 20 )
+  const scene = createScene({ background: 0xb6d4ff }, [axesHelper, gridHelper])
+  const camera = createPerspectiveCamera({ containDom: containerDom, far: 20000 }, {x: 200, y: 1000, z: 10000})
+  const renderer = createRenderer(containerDom)
+  const orbitControl = createOrbitControls(camera, renderer.domElement)
 
   // 4、创建图形
   scene.add(getStair())
-  
-  function animate() {
-    requestAnimationFrame(animate)
-    orbitControl.update()
-    renderer.render(scene, camera)
-  }
+
+  const animateCbs = [orbitControl.update]
+  const animate = createAnimate(scene, camera, renderer, animateCbs)
   animate()
-}
-
-
-// 创建场景
-function getScene() {
-  const scene = new THREE.Scene()
-  scene.background = new THREE.Color('#b6d4ff')
-  // 添加坐标轴网格线支持
-  const axesHelper = new THREE.AxesHelper( 5000 )
-  const gridHelper = new THREE.GridHelper( 10000, 20 )
-  scene.add( axesHelper ).add( gridHelper )
-
-  return scene
-}
-// 创建相机
-function getCamera(dom) {
-  if (!dom) {
-    console.warn('🚀~~~~~~创建相机需要一个容器~~~~~~🚀')
-    return
-  }
-  const camera = new THREE.PerspectiveCamera(45, dom.clientWidth / dom.clientHeight, 1, 20000)
-  camera.position.z = 10000
-  camera.position.x = 200
-  camera.position.y = 1000
-  
-  return camera
-}
-
-// 创建渲染器
-function getRenderer(dom) {
-  if (!dom) {
-    console.warn('🚀~~~~~~创建渲染器需要一个容器~~~~~~🚀')
-    return
-  }
-  const renderer = new THREE.WebGLRenderer({ antialias: true })
-  renderer.setSize(dom.clientWidth, dom.clientHeight)
-  dom.appendChild( renderer.domElement )
-
-  return renderer
-}
+})
 
 // 创建楼梯分组
 function getStairGroup() {

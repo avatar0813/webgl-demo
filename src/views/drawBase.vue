@@ -27,7 +27,7 @@ onMounted(() => {
   const axesHelper = new AxesHelper( 20 );
   const gridHelper = new GridHelper( 20, 20 );
   const scene = createScene({ background: 0xb6d4ff }, [axesHelper, gridHelper])
-  const camera = createPerspectiveCamera({aspect: container.value.clientWidth / container.value.clientHeight })
+  const camera = createPerspectiveCamera({containDom: container.value })
 
   // 添加几何图形
   const cube = getCube(1,1,1)

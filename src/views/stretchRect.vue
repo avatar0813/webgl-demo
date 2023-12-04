@@ -30,7 +30,7 @@ const initScene = () => {
   const containerDom = container.value
   // 1、场景 及 添加坐标轴网格线支持
   const scene = createScene({ background: 0xb6d4ff })
-  const camera = createPerspectiveCamera({ aspect: containerDom.clientWidth / containerDom.clientHeight, far: 5000 })
+  const camera = createPerspectiveCamera({ containDom: containerDom, far: 5000 })
   const renderer = createRenderer(containerDom)
   const orbitControl = createOrbitControls(camera, renderer.domElement)
 

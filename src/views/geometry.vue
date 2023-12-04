@@ -27,7 +27,7 @@ onMounted(() => {
   const axesHelper = new THREE.AxesHelper( 20 )
   const gridHelper = new THREE.GridHelper( 20, 20 )
   const scene = createScene({ background: 0xb6d4ff }, [axesHelper, gridHelper])
-  const camera = createPerspectiveCamera({ aspect: containDom.clientWidth / containDom.clientHeight })
+  const camera = createPerspectiveCamera({ containDom: containDom })
   const renderer = createRenderer(containDom)
   const orbitControl = createOrbitControls(camera, renderer.domElement)
 

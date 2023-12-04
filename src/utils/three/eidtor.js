@@ -38,13 +38,13 @@ export function createPerspectiveCamera(options = {}, positions = {}) {
   
   const {
     fov,
-    aspect,
+    containDom,
     near,
     far,
   } = {
     fov: 45, // 摄像机视锥体垂直视野角度
-    aspect : 1, // 摄像机视锥体长宽比
-    near: 1, // 摄像机视锥体近端面
+    dom : 1, // 摄像机视锥体长宽比
+    containDom: window, // 容器
     far: 1000, // 摄像机视锥体远端面
     ...options
   }
@@ -59,6 +59,11 @@ export function createPerspectiveCamera(options = {}, positions = {}) {
     z: 10,
     ...positions
   }
+
+  const isWin = containDom instanceof Window
+  const width = isWin ? window.innerWidth : containDom.clientWidth
+  const height = isWin ? window.innerHeight : containDom.clientHeight
+  const aspect = width / height 
   
   const camera = new PerspectiveCamera(fov, aspect, near, far)
   camera.position.x = x
