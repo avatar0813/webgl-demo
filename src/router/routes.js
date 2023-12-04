@@ -27,12 +27,7 @@ const routes = [
   {
     path: '/stretch',
     name: 'stretch',
-    component: () => import('@/views/stretch.vue')
-  },
-  {
-    path: '/stretch02',
-    name: 'stretch02',
-    component: () => import('@/views/stretch02.vue')
+    component: () => import('@/views/stretchRect.vue')
   },
   {
     path: '/geometry',

@@ -38,11 +38,7 @@ const pages = [
   },
   {
     path: '/stretch',
-    title: '拉伸几何体-多面体',
-  },
-  {
-    path: '/stretch02',
-    title: '拉伸几何体-正方体',
+    title: '拉伸几何体',
   },
 ]
 </script>
