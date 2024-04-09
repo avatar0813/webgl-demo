@@ -13,7 +13,7 @@ import {
   createPerspectiveCamera,
   createRenderer,
   createAnimate,
-} from '@/utils/three/eidtor'
+} from '@/utils/three/editor'
 
 import {
   createOrbitControls

@@ -18,7 +18,7 @@ import {
   createPerspectiveCamera,
   createRenderer,
   createAnimate,
-} from '@/utils/three/eidtor'
+} from '@/utils/three/editor'
 
 const container = ref(null)
 
