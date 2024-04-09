@@ -40,6 +40,10 @@ const pages = [
     path: '/stretch',
     title: '拉伸几何体',
   },
+  {
+    path: '/matrix-mean',
+    title: '矩阵的意义',
+  },
 ]
 </script>
 
