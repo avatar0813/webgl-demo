@@ -67,8 +67,9 @@ function vecWithPlaneIntersectPoint(line, vecA, vecB) {
   const { startPoint, endPoint } = line
   const normal = new Vector3().crossVectors(vecA, vecB).normalize()
   const plane = new Plane().setFromNormalAndCoplanarPoint(normal, vecB)
-  const rayDirection = endPoint.clone().sub(startPoint).normalize()
+  const rayDirection = startPoint.clone().sub(endPoint).normalize()
   const ray = new Ray(startPoint.clone(), rayDirection)
+  console.warn(ray)
   // 平行
   if (rayDirection.dot(normal) === 0) return null
 
@@ -100,7 +101,7 @@ function testInterest() {
   console.log('交点：', intersectPoint)
 }
 
-// testInterest()
+testInterest()
 </script>
 
 <style lang="scss" scoped></style>
