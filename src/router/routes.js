@@ -39,6 +39,11 @@ const routes = [
     name: "matrixMean",
     component: () => import("@/views/tutorial/matrixMean.vue"),
   },
+  {
+    path: "/ray-plane",
+    name: "rayPlane",
+    component: () => import("@/views/rayPlane.vue"),
+  }
 ]
 
 export default routes

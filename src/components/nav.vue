@@ -1,11 +1,11 @@
 <template>
   <ul class="nav" @click="clickHander">
-    <li v-for="(item, index) in pages" :key="index" :data-path="item.path" >{{ item.title }}</li>
+    <li v-for="(item, index) in pages" :key="index" :data-path="item.path">{{ item.title }}</li>
   </ul>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
@@ -27,7 +27,7 @@ const pages = [
   {
     path: '/hover-face',
     title: '鼠标hover几何体face变色',
-  }, 
+  },
   {
     path: '/stair',
     title: '绘制楼梯',
@@ -44,14 +44,18 @@ const pages = [
     path: '/matrix-mean',
     title: '矩阵的意义',
   },
+  {
+    path: '/ray-plane',
+    title: '射线与平面的交点',
+  },
 ]
 </script>
 
 <style lang="scss" scoped>
-.nav{
+.nav {
   @apply p-6;
 
-  & li{
+  & li {
     @apply text-Slate-900 p-1 w-100 wd-600 hover:(font-bold) cursor-pointer;
   }
 }
