@@ -29,8 +29,8 @@ onMounted(() => {
   const scene = createScene({ background: 0xb6d4ff }, [axesHelper, gridHelper])
   const camera = createPerspectiveCamera({ containDom: container.value })
 
-  const startPoint = new Vector3(1, 1, 1)
-  const endPoint = new Vector3(1, 1, 2)
+  const startPoint = new Vector3(1, 0, 1)
+  const endPoint = new Vector3(1, 1, 1)
   // 测试线
   const points = [startPoint, endPoint]
   const geometry = new BufferGeometry().setFromPoints(points)
@@ -67,33 +67,21 @@ function vecWithPlaneIntersectPoint(line, vecA, vecB) {
   const { startPoint, endPoint } = line
   const normal = new Vector3().crossVectors(vecA, vecB).normalize()
   const plane = new Plane().setFromNormalAndCoplanarPoint(normal, vecB)
-  const rayDirection = startPoint.clone().sub(endPoint).normalize()
+  const rayDirection = endPoint.clone().sub(startPoint).normalize()
   const ray = new Ray(startPoint.clone(), rayDirection)
-  console.warn(ray)
-  // 平行
+  
+  // 平行 射线方向与平面法向量垂直，这平行于平面
   if (rayDirection.dot(normal) === 0) return null
 
   const intersectionPoint = new Vector3()
   ray.intersectPlane(plane, intersectionPoint)
   return intersectionPoint
 }
-function vecWithPlaneIntersectPoint2(line, vecA, vecB) {
-  const { startPoint, endPoint } = line
-
-  const planeNormal = new Vector3().crossVectors(vecA, vecB).normalize()
-  const plane = new Plane(planeNormal, 0) // Assume plane passes through origin
-  const helper = new THREE.PlaneHelper(plane, 1, 0xffff00)
-  const rayDirection = startPoint.clone().sub(endPoint).normalize()
-  const ray = new Ray(startPoint.clone(), rayDirection)
-
-  const intersectionPoint = ray.intersectPlane(plane)
-  return intersectionPoint
-}
 
 
 function testInterest() {
-  const startPoint = new Vector3(1, 1, 1)
-  const endPoint = new Vector3(1, 1, 2)
+  const startPoint = new Vector3(1, 0, 1)
+  const endPoint = new Vector3(1, 1, 1)
   const line = { startPoint, endPoint }
   const axisX = new Vector3(5, 0, 0)
   const axisY = new Vector3(0, 5, 0)
