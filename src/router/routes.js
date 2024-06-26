@@ -43,7 +43,12 @@ const routes = [
     path: "/ray-plane",
     name: "rayPlane",
     component: () => import("@/views/rayPlane.vue"),
-  }
+  },
+  {
+    path: "/world-distance",
+    name: "worldDistance",
+    component: () => import("@/views/worldDistance.vue"),
+  },
 ]
 
 export default routes

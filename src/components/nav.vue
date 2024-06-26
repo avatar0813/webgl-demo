@@ -48,6 +48,10 @@ const pages = [
     path: '/ray-plane',
     title: '射线与平面的交点',
   },
+  {
+    path: '/world-distance',
+    title: '像素转坐标距离',
+  },
 ]
 </script>
 
