@@ -49,6 +49,11 @@ const routes = [
     name: "worldDistance",
     component: () => import("@/views/worldDistance.vue"),
   },
+  {
+    path: '/living-view',
+    name: 'livingView',
+    component: () => import('@/views/livingView/index.vue')
+  }
 ]
 
 export default routes

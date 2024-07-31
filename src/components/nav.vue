@@ -52,6 +52,10 @@ const pages = [
     path: '/world-distance',
     title: '像素转坐标距离',
   },
+  {
+    path: '/living-view',
+    title: '全景视图'
+  },
 ]
 </script>
 
